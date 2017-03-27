@@ -39,13 +39,31 @@ def create_menuitem(restaurant_id):
     else:
         return render_template('newMenuItem.html', restaurant_id=restaurant_id)
 
-@app.route('/restaurants/<int:restaurant_id>/<int:menuitem_id>/edit/')
+@app.route('/restaurants/<int:restaurant_id>/<int:menuitem_id>/edit/',
+            methods=['GET', 'POST'])
 def edit_menuitem(restaurant_id, menuitem_id):
-    return 'Normally, you\'d edit a restaurant here.'
+    if request.method == 'POST':
+        item = session.query(MenuItem).filter_by(id=menuitem_id).one()
+        item.name = request.form['name']
+        session.add(item)
+        session.commit()
+        return redirect(url_for('restaurant_menu',
+            restaurant_id=restaurant_id))
+    else:
+        return render_template('editMenuItem.html',
+            restaurant_id=restaurant_id, menuitem_id=menuitem_id)
 
-@app.route('/restaurants/<int:restaurant_id>/<int:menuitem_id>/delete/')
+@app.route('/restaurants/<int:restaurant_id>/<int:menuitem_id>/delete/',
+            methods=['GET','POST'])
 def delete_menuitem(restaurant_id, menuitem_id):
-    return 'Normally, you\'d delete a restaurant here.'
+    item = session.query(MenuItem).filter_by(id=menuitem_id).one()
+    if request.method == 'POST':
+        session.delete(item)
+        session.commit()
+        return redirect(url_for('restaurant_menu',
+            restaurant_id=restaurant_id))
+    else:
+        return render_template('deleteMenuItem.html', item=item)
 
 if __name__ == '__main__':
     app.debug = True
