@@ -3,10 +3,11 @@
 <head>
     <meta charset="utf-8">
     <title></title>
-    <link rel="stylesheet" href="css/bootstrap.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-    <h1>{{ restaurant.name }}</h1>
+    <div class="pane">
+    <h1 class="header">{{ restaurant.name }}</h1>
     {% with messages = get_flashed_messages() %}
         {% if messages %}
             <ul>
@@ -18,13 +19,16 @@
     {% endwith %}
 
     {% for item in items %}
-        {{ item.name }}</br>
-        {{ item.price }}</br>
-        {{ item.description }}</br>
+    <p class="name">{{ item.name }}</p></br>
+    <p class="price">{{ item.price }}</p></br>
+    <p class="description">{{ item.description }}</p></br>
+    <div class="editdeletepane">
         <a href={{ url_for('edit_menuitem', restaurant_id=restaurant.id, menuitem_id=item.id) }}>Edit</a>
         <a href={{ url_for('delete_menuitem', restaurant_id=restaurant.id, menuitem_id=item.id) }}>Delete</a></br>
-        </br>
+    </div>
+    </br>
     {% endfor %}
+    </div>
 </body>
 </html>
 
